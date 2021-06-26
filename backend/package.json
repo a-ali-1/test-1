@@ -4,7 +4,7 @@
   "description": "Backend for WebAnwendungen2 SS2021, mit Dateiupload",
   "main": "server.js",
   "scripts": {
-    "test": "jest"
+    "test": "jest --coverage"
   },
   "author": "Robert Kuti",
   "license": "ISC",

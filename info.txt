@@ -1,0 +1,28 @@
+WebAnwendungen 2 Backend und Frontend Demo
+Version 2.0.0, 07.04.2021
+Sommersemester 2021, HS Albstadt-Sigmaringen, INF
+
+Verzeichnisstruktur
+
+--> \WebAnw2Backend
+		Die Hauptdatei des Servers sowie Hilfsbibliotheken
+	--> \dao
+			Die Klassen, welche zum Zugriff auf die Datenbanktabellen verwendet werden
+	--> \db
+			Die SQLite Datenbankdatei
+	--> \node_modules
+			Die Node.js Bibliotheken, aktualisieren mit dem Befehl "npm update"
+	--> \services
+			Die Klassen, welche die einzelnen Services umsetzen
+	
+--> \WebAnw2FrontendDemo
+		Demo Dateien, welche das Backend verwenden und Ihnen verschiedene Möglichkeiten aufweisen
+		
+Wichtig:
+	Starten Sie das backend über eine Node.js Konsole mit dem Befehl
+		node server.js
+		
+	Dann können Sie die Dateien im Ordner WebAnw2FrontendDemo mit einem Browser ausführen
+	Denken Sie daran beim Browser die Konsole sichtbar zu haben
+	
+	

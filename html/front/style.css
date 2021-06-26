@@ -1,0 +1,277 @@
+html, body {
+  font-family: Arial, Helvetica, sans-serif;
+  height: 100%
+}
+
+* {
+  box-sizing: border-box;
+}
+
+/* Home */
+
+.home{
+  height: 250px;
+  background-color: #FAF6E8;
+  padding:50px;
+}
+
+.home .container h1{
+ font-size: 50px;
+ font-weight: bold;
+ color: #000;
+ text-transform: uppercase;
+}
+
+.home .container h1 span{
+  color: #325862;
+}
+
+.home .container .table{
+  width: 50%;
+}
+
+.home .container .table tr td{
+  width: 50%;
+}
+.home .container .table .btn{
+  width: 100%;
+  color: #fff;
+  background-color: #000;
+  padding: 15px;
+  font-size: 20px;
+  text-transform: uppercase;
+}
+.home .container .table .btn:hover{
+  background-color: gray;
+}
+
+.row::after {
+  content: "";
+  clear: both;
+  display: table;
+}
+
+[class*="col-"] {
+  float: left;
+  padding: 1px;
+}
+
+.col-left {width:15%;}
+.col-center {width:70%;}
+.col-right {width:15%;}
+
+.logo{
+  float: right;
+  padding-bottom: 14px;
+}
+
+.topnav {
+  background-color: #325862;
+}
+
+.bottomnav {
+  background-color: #325862;
+  text-align: left;
+  color: #FFFF66;
+}
+
+.content {
+  background-color: #FAF6E8;
+}
+
+.bumper {
+  width: 100%;
+  color: #FAF6E8;
+  background-color: #325862;
+  padding: 1px 50px;
+}
+
+.topnav ul {
+  float: right;
+  list-style-type: none;
+  margin-bottom: 0px;
+  padding: 0px 0px;
+  overflow: hidden;
+}
+
+.topnav li {
+  display: inline-block;
+}
+
+.topnav li a {
+  display: inline-block;
+  color: #FFFF66;
+  text-align: center;
+  padding-top: 80px;
+  padding-left: 16px;
+  font-weight: bold;
+  font-size: 1.875em;
+  text-decoration: none;
+}
+
+.topnav li a:hover {
+  color: #FAF6E8;
+  width: 100%;
+}
+
+.topnav li a.active {
+  color: #FAF6E8;
+  width: 100%;
+}
+
+.bottomnav ul {
+  float: left;
+  list-style-type: none;
+  margin: 0;
+  padding: 0px 0px;
+  overflow: hidden;
+}
+
+.bottomnav li a {
+  display: inline-block;
+  padding: 12px 0px;
+  text-align: left;
+  color: #FAF6E8;
+  font-weight: lighter;
+  text-decoration: none;
+}
+
+.bottomnav li a:hover {
+  color: #FFFF66;
+  width: 100%;
+}
+
+input, select {
+  display: list-item;
+  border: 1.5px solid #325862;
+  background-color: #FAF6E8;
+  color: #6C767D;
+  padding: 5px 10px;
+  margin: 8px 0;
+  border-radius: 4px;
+}
+
+input[type=submit] {
+  background-color: #325862;
+  color: #FAF6E8;
+  border: none;
+  cursor: pointer;
+  border-radius: 4px;
+  padding: 5px 20px;
+}
+
+input[type=submit]:hover {
+  background-color: #4d7782;
+}
+
+input[type=password], input[type=number]{
+  width: 130px;
+}
+
+input[type=email], input[type=tel] {
+  width: 305px;
+}
+
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type=number] {
+  -moz-appearance: textfield;
+}
+
+a {
+  color: #325862;
+  text-decoration: none;
+}
+
+h3 {color: #325862;
+}
+
+header {
+  background-color: #325862;
+  padding: 40px;
+  text-align: left;
+  font-size: 20px;
+  color: white;
+}
+
+ article {
+   background-color: #FAF6E8;
+   min-height: 100%;
+   padding-bottom: 323px;
+}
+
+footer {
+  position: relative;
+  width: 100%;
+  background-color: #325862;
+  padding: 10px 50px;
+  color: #FAF6E8;
+  margin-top: -323px;
+}
+
+
+/* Mitgliedschaft*/
+
+.columns {
+  float: left;
+  width: 33.3%;
+  padding: 8px;
+}
+
+.price {
+  list-style-type: none;
+  border: 1px solid #eee;
+  margin: 0;
+  padding: 0;
+  -webkit-transition: 0.3s;
+  transition: 0.3s;
+}
+
+.price:hover {
+  box-shadow: 0 8px 12px 0 rgba(0,0,0,0.2)
+}
+
+.price .header {
+  background-color: #111;
+  color: white;
+  font-size: 25px;
+}
+
+.price li {
+  border-bottom: 1px solid #eee;
+  padding: 20px;
+  text-align: center;
+}
+
+.price .grey {
+  background-color: #eee;
+  font-size: 20px;
+}
+
+.button {
+  background-color: #4CAF50;
+  border: none;
+  color: white;
+  padding: 10px 25px;
+  text-align: center;
+  text-decoration: none;
+  font-size: 18px;
+}
+
+@media only screen and (max-width: 600px) {
+  .columns {
+    width: 100%;
+  }
+}
+
+  /* Make the image fully responsive */
+  .carousel-inner img {
+    width: 100%;
+    height: 100%;
+  }

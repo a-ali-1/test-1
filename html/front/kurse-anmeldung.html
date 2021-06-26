@@ -1,0 +1,189 @@
+<html lang="de">
+<head>
+	<meta charset="utf-8"/>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+	<!--Bootstrap Stylesheet muss an erster Stelle stehen-->
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6" crossorigin="anonymous">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+	<script src="js/urlParameter.js"></script>
+
+	<link rel="stylesheet" href="style.css">
+	<title>Team fit</title>
+
+</head>
+<body>
+
+<header>
+	<nav>
+		<div class="row topnav">
+		 <div class = "col-left">
+			 <img src="logo.png" alt="Team Fit" height="140px" class="logo">
+		 </div>
+
+		 <div class = "col-center">
+				<ul>
+					 <li><a href="home.html">Home</a></li>
+					 <li><a href="mitgliedschaft.html">Mitgliedschaft</a></li>
+					 <li><a class="active" href="kurse.html">Kurse</a></li>
+					 <li><a href="kontakt.html">Kontakt</a></li>
+				</ul>
+		</div>
+
+			<div class = "col-right"></div>
+		</div>
+		</nav>
+</header>
+
+
+
+<article>
+
+	<div class="row content" style="width: 95%;">
+		<div class = "col-left"></div>
+
+		 <div class = "col-center">
+			 <h1>Kurs-Anmeldung</h1>
+			 <h3>Jetzt Kurs buchen und Training beginnen!</h3>
+
+			 <h2 id=kursName></h2>
+			 <p id=kursInfo></p>
+
+			 <div>
+				 <form id="add_form">
+
+					 <label for="rhythmus">Rhythmus:</label>
+					 <select id="rhythmus" name="rhythmus" style="-webkit-appearance: none; -moz-appearance: none; appearance: none;" form = add_form>
+						 <option value="woechentlich">wöchentlich*</option>
+						 <option value="einmalig">einmalig*</option>
+					 </select>
+
+					 <label for="email">E-Mail:</label>
+					 <input type="email" id="email" name="email" placeholder="your@mail.com" required>
+					 <label for="passwort">Passwort:</label>
+					 <input type="password" id="passwort" name="passwort" placeholder="****" form="login_form" required>
+
+					 <input type="submit" value="Buchen">
+				 </form>
+				 </div>
+
+				 <script>
+
+				 //Kursid aus url ermittlen und Daten laden
+				 $(document).ready(function() {
+            console.log('loading data for choosen class');
+
+            // get id from url parameter
+            var id = -1;
+
+            if (existsUrlParameter('id'))
+                id = getUrlParameterValue('id');
+
+            console.log('target class id=' + id);
+
+            if (id == -1) {
+                alert('Keine Ziel-ID in URL erhalten. Fehlerhafter Link. Wählen Sie zuerst einen Kurs über kurse.html');
+                return;
+            }
+
+			      //load class data
+			      $.ajax({
+                      url: 'http://localhost:8000/wba2api/kurs/gib/' + id,
+                      method: 'get',
+			      	        dataType: 'json'
+                  }).done(function (response) {
+                      console.log(response);
+
+                      $('#kursName').text(response.daten.name);
+											$('#kursInfo').text("Immer " + response.daten.termin + "s mit " + response.daten.trainer.vorname + " " + response.daten.trainer.nachname);
+
+                  }).fail(function (jqXHR, statusText, error) {
+                      console.log('Response Code: ' + jqXHR.status + ' - Fehlermeldung: ' + jqXHR.responseText);
+                      alert('Ein Fehler ist aufgetreten: ' + jqXHR.responseText);
+                  });
+
+				    $('#sadd_form').submit(function (event) {
+	 				    event.preventDefault();
+
+							let kursid = id;
+							let rhytmus = $('#rhytmus').val();
+
+						  let email = $('#email').val();
+						  let passwort = $('#passwort').val();
+							var obj = {'email': email, 'passwort': passwort};
+
+
+							$.ajax({
+ 	 									    url: 'http://localhost:8000/wba2api/mitglied/zugang',
+ 	 									    method: 'post',
+ 	 					            contentType: 'application/json',
+ 	 					   data: JSON.stringify(obj)
+ 	 							    }).done(function (response) {
+ 	 									    console.log(response);
+
+												mitgliedid = response;	
+						 				    var obj = {'rhytmus': rhytmus, 'kursid': kursid, 'mitgliedid': mitgliedid};
+
+						 				   $.ajax({
+						 									    url: 'http://localhost:8000/wba2api/anmeldung',
+						 									    method: 'post',
+						 					   contentType: 'application/json',
+						 					   data: JSON.stringify(obj)
+						 							    }).done(function (response) {
+						 									    console.log(response);
+																	alert("Kursanmeldung erfolgreich");
+															    //Formular leeren
+															    $('#add_form')[0].reset();
+
+						 							    }).fail(function (jqXHR, statusText, error) {
+						 									    console.log('Response Code: ' + jqXHR.status + ' - Fehlermeldung: ' + jqXHR.responseText);
+						 								 	    alert("Kursanmeldung fehlgeschlagen: " + jqXHR.responseText);
+						 			            });
+
+
+ 	 							    }).fail(function (jqXHR, statusText, error) {
+ 	 									    console.log('Response Code: ' + jqXHR.status + ' - Fehlermeldung: ' + jqXHR.responseText);
+ 	 								 	    alert("Kursanmeldung fehlgeschlagen: " + jqXHR.responseText);
+ 	 			            });
+
+
+	 					  });
+
+					});
+
+	 		 </script>
+
+
+		 </div>
+
+		<div class = "col-right"></div>
+	</div>
+
+</article>
+
+<footer>
+	<nav>
+	<div class="row bottomnav">
+	 <div class = "col-left">
+		 <h1>Team Fit</h1>
+
+		 <ul>
+			 <li><a href="kontakt.html">Kontakt</a></li>
+			 <li><a href="impressum.html">Impressum</a></li>
+			 <li><a href="agb.html">AGB</a></li>
+			 <li><a href="https://de.wikipedia.org/wiki/Soziale_Medien"><img src="socialmedia.png" alt="Social Media Links" height="20px"/></a></li>
+		 </ul>
+
+	 </div>
+
+	 <div class = "col-center"></div>
+
+		<div class = "col-right"></div>
+	</div>
+	</nav>
+</footer>
+
+<!--Scriptbundle für Bootstrap muss vor dem /body Tag stehen-->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js" integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf" crossorigin="anonymous"></script>
+</body>
+</html>

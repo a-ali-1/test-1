@@ -1,0 +1,418 @@
+<html lang="de">
+<head>
+	<meta charset="utf-8"/>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+	<link rel="stylesheet" href="style.css">
+	<title>Team fit</title>
+	<script src="js/sessionHandling.js"></script>
+	<script>
+	loggedin();
+	function loggedin(){
+		if (!existsSessionItem('access')) {
+			 alert('Sie sind nicht angemeldet! Melden Sie sich über login.html an.');
+				console.log('kein Session Item gefunden');
+				window.location.replace("login.html");
+		}
+		else {
+			if(getSessionItem('access')!=1) {
+					 alert('Sie sind nicht angemeldet! Melden Sie sich über login.html an.');
+					 console.log('access != 1');
+					 window.location.replace("login.html");
+				}
+		}
+	}
+	</script>
+
+</head>
+<body>
+
+<header>
+	<nav>
+		<div class="row topnav">
+		 <div class = "col-left">
+			 <img src="logo.png" alt="Team Fit" height="140px" class="logo">
+		 </div>
+
+		 <div class = "col-center">
+				<ul>
+					<li><a href="login.html">ADMINISTRATION</a></li>
+					 <li><a href="mitglieder.html">Mitglieder</a></li>
+					 <li><a href="kurse.html">Kurse</a></li>
+				</ul>
+		</div>
+
+			<div class = "col-right"></div>
+		</div>
+		</nav>
+</header>
+
+
+
+<article>
+
+	<div class="row content">
+		<div class = "col-left"></div>
+
+		 <div class = "col-center">
+
+			 <section id = "Classes">
+				 <h1>Kursverwaltung</h1>
+			 </section>
+
+
+			<!-- KEIN ZIEL für dynamsichen Inhalt. Dieser wird einfach immer weiter angehängt -->
+
+			<script>
+
+			$(document).ready(function() {
+					console.log('Document ready, loading data from Service');
+
+					$.ajax({
+							url: 'http://localhost:8000/wba2api/kurs/alle',
+							method: 'get',
+			dataType: 'json'
+					}).done(function (response) {
+							console.log('Data for Kurse loaded successfully');
+							console.log(response);
+
+							/* die Idee bei diesem Prinzip ist, dass HTML Elemente als Objekte angesehen werden
+									welche mit existierenden Methoden mit Daten und Attributen usw. versorgt werden können.
+							*/
+
+							// HTML Element anlegen
+							var div = $('<div>');
+
+							// object mit weiterem Inhalt und Code vervollständigen
+							div.append('Folgende Daten wurden geladen:<br><br>');
+
+									// unterobjekte erstellen
+									var table = $('<table>');
+									var tr = null;
+									var td = null;
+									table.append('<tr><th>ID</th><th>Name</th><th>Bildpfad</th><th>Trainer</th><th>Wochentag</th><th>Beschreibung</th><th></th></tr>');
+
+									for (i = 0; i < response.daten.length; i++) {
+											// Objekt aus array holen
+											var obj = response.daten[i];
+
+											// zeile erstellen
+											tr = $('<tr>');
+
+													// zellen erstellen, mit Daten bestücken und der Zeile hinzufügen
+													td = $('<td>');
+													td.text(obj.id);
+													tr.append(td);
+
+													td = $('<td>');
+													td.text(obj.name);
+													tr.append(td);
+
+													td = $('<td>');
+													td.text(obj.bildpfad);
+													tr.append(td);
+
+													td = $('<td>');
+													td.text(obj.trainer.vorname + ' ' + obj.trainer.nachname);
+													tr.append(td);
+
+													td = $('<td>');
+													td.text(obj.termin);
+													tr.append(td);
+
+													td = $('<td>');
+													td.text(obj.beschreibung);
+													tr.append(td);
+
+													td = $('<td>');
+														btn = $('<button>');
+														btn.prop('class', 'delbtn')
+														btn.attr('onclick', 'deleteClass('+obj.id+')');
+														btn.prop('type', 'button');
+														btn.text('Löschen');
+														td.append(btn);
+													tr.append(td);
+
+											tr.attr('id','classEntry'+obj.id);
+
+											// zeile der Tabelle hinzufügen
+											table.append(tr);
+									}
+
+							// tabelle dem div hinzufügen
+							div.append(table);
+
+							// zusammengesetzen Code / objekt ans dokument anhängen
+							$('#Classes').append(div);
+
+							//load data for next section
+							$.ajax({
+									url: 'http://localhost:8000/wba2api/anmeldung/alle',
+									method: 'get',
+					dataType: 'json'
+				}).done(function (response) {
+									console.log('Data for Teilnehmer loaded successfully');
+									console.log(response);
+
+									/* die Idee bei diesem Prinzip ist, dass HTML Elemente als Objekte angesehen werden
+											welche mit existierenden Methoden mit Daten und Attributen usw. versorgt werden können.
+									*/
+
+									// HTML Element anlegen
+									var div = $('<div>');
+
+									// object mit weiterem Inhalt und Code vervollständigen
+									div.append('Folgende Daten wurden geladen:<br><br>');
+
+											// unterobjekte erstellen
+											var table = $('<table>');
+											var tr = null;
+											var td = null;
+											table.append('<tr><th>Kurs</th><th>Mitglied</th><th>KursID</th><th>MitgliedID</th><th>Rhytmus</th><th>Mitgliedschaft</th><th></th></tr>');
+
+											for (i = 0; i < response.daten.length; i++) {
+													// Objekt aus array holen
+													var obj = response.daten[i];
+
+													// zeile erstellen
+													tr = $('<tr>');
+
+															// zellen erstellen, mit Daten bestücken und der Zeile hinzufügen
+															td = $('<td>');
+															td.text(obj.kurs.name);
+															tr.append(td);
+
+															td = $('<td>');
+															td.text(obj.mitglied.vorname + ' ' + obj.mitglied.nachname);
+															tr.append(td);
+
+															td = $('<td>');
+															td.text(obj.kurs.id);
+															tr.append(td);
+
+															td = $('<td>');
+															td.text(obj.mitglied.id);
+															tr.append(td);
+
+															td = $('<td>');
+															td.text(obj.rhytmus);
+															tr.append(td);
+
+															td = $('<td>');
+															td.text(obj.mitglied.mitgliedschaftid);
+															tr.append(td);
+
+															td = $('<td>');
+																btn = $('<button>');
+																btn.prop('class', 'delbtn')
+																btn.attr('onclick', 'deleteSubscriber('+obj.id+')');
+																btn.prop('type', 'button');
+																btn.text('Löschen');
+																td.append(btn);
+															tr.append(td);
+
+													tr.attr('id','SubscriberEntry'+obj.id);
+
+													// zeile der Tabelle hinzufügen
+													table.append(tr);
+											}
+
+									// tabelle dem div hinzufügen
+									div.append(table);
+
+									// zusammengesetzen Code / objekt ans dokument anhängen
+									$('#Subscribers').append(div);
+
+							}).fail(function (jqXHR, statusText, error) {
+									console.log('Error occured');
+									console.log('Response Code: ' + jqXHR.status + ' - Message: ' + jqXHR.responseText);
+									alert(jqXHR.responseText);
+							});
+
+					}).fail(function (jqXHR, statusText, error) {
+							console.log('Error occured');
+							console.log('Response Code: ' + jqXHR.status + ' - Message: ' + jqXHR.responseText);
+							alert(jqXHR.responseText);
+					});
+
+			});
+
+			function deleteClass(id){
+				console.log('Delete Class: ' + id);
+				$.ajax({
+		            url: 'http://localhost:8000/wba2api/kurs/'+id,
+		            method: 'delete',
+					dataType: 'json'
+		        }).done(function (response) {
+		            console.log(response);
+					$('#classEntry'+id).remove();
+		        }).fail(function (jqXHR, statusText, error) {
+		            console.log('Response Code: ' + jqXHR.status + ' - Fehlermeldung: ' + jqXHR.responseText);
+		            $('#output').html('Ein Fehler ist aufgetreten');
+								alert("Eintrag konnte nicht gelöscht werden: " + jqXHR.responseText);
+				});
+			}
+
+			function deleteSubscriber(id){
+				console.log('Delete Subscriber: ' + id);
+				$.ajax({
+		            url: 'http://localhost:8000/wba2api/anmeldung/'+id,
+		            method: 'delete',
+					dataType: 'json'
+		        }).done(function (response) {
+		            console.log(response);
+					$('#SubscriberEntry'+id).remove();
+		        }).fail(function (jqXHR, statusText, error) {
+		            console.log('Response Code: ' + jqXHR.status + ' - Fehlermeldung: ' + jqXHR.responseText);
+		            $('#output').html('Ein Fehler ist aufgetreten');
+								alert("Eintrag konnte nicht gelöscht werden: " + jqXHR.responseText);
+				});
+			}
+
+			</script>
+
+
+			<h1>Kurs hinzufügen</h1>
+
+			<form id="class_form"></form>
+
+			<table class="add"><section id = "kursVerwaltung">
+				<tr>
+					<th>Name</th>
+					<th>Bildpfad</th>
+					<th>Trainer (ID)</th>
+					<th>Wochentag</th>
+					<th>Beschreibung</th>
+					<th></th>
+				</tr>
+				<tr>
+					<td><input type="text" id="name" name="name" style="border-style: none;" form = class_form required></td>
+					<td><input type="text" id="bildpfad" name="bildpfad" style="border-style: none;" form = class_form required></td>
+					<td><input type="text" id="trainerid" name="trainerid" style="border-style: none;" form = class_form required></td>
+					<td><input type="text" id="termin" name="termin" style="border-style: none;" form = class_form required></td>
+					<td><input type="text" id="beschreibung" name="beschreibung" style="border-style: none;" form = class_form required></td>
+					<td> <input type="submit" value=Hinzufügen form = class_form></td>
+				</tr>
+			</table></section>
+
+			<script>
+
+			$('#class_form').submit(function (event) {
+				event.preventDefault();
+
+				 //Form Daten sammeln mithilfe der ids
+				 let name = $('#name').val();
+				 let bildpfad = $('#bildpfad').val();
+				 let trainerid = $('#trainerid').val();
+				 let termin = $('#termin').val();
+				 let beschreibung = $('#beschreibung').val();
+				 var obj = { 'name': name, 'bildpfad': bildpfad, 'trainerid': trainerid, 'beschreibung': beschreibung, 'termin': termin};
+
+	 			$.ajax({
+	                 url: 'http://localhost:8000/wba2api/kurs',
+	                 method: 'post',
+	 				contentType: 'application/json',
+	 				data: JSON.stringify(obj)
+	             }).done(function (response) {
+	                 console.log(response);
+									 //Formular leeren
+									 //Anzeige aktualisieren
+									 $('#class_form')[0].reset();
+									 location.reload(true);
+
+	             }).fail(function (jqXHR, statusText, error) {
+	                 console.log('Response Code: ' + jqXHR.status + ' - Fehlermeldung: ' + jqXHR.responseText);
+									 alert("Eintrag konnte nicht angelegt werden: " + jqXHR.responseText);
+			});
+	         });
+
+		 </script>
+
+      <section id = "Subscribers">
+			<h1>Teilnehmerliste</h1>
+		  </section>
+
+			<h1>Teilnehmer hinzufügen</h1>
+
+			<form id="subscriber_form"></form>
+
+			<table class="add"><section id = "teilnehmerVerwaltung">
+				<tr>
+					<th>KursID</th>
+					<th>MitgliedID</th>
+					<th>Rhytmus</th>
+					<th></th>
+				</tr>
+				<tr>
+					<td><input type="text" id="kursid" name="kursid" style="border-style: none;" form = subscriber_form required></td>
+					<td><input type="text" id="mitgliedid" name="mitgliedid" style="border-style: none;" form = subscriber_form required></td>
+					<td> <select id="rhytmus" name="rhytmus" style="border-style: none; -webkit-appearance: none; -moz-appearance: none; appearance: none;" form = subscriber_form required>
+						 <option value="wöchentlich">wöchentlich</option>
+					 </select>
+				 </td>
+					<td> <input type="submit" value=Hinzufügen form = subscriber_form></td>
+				</tr>
+			</table></section>
+
+			<script>
+
+			$('#subscriber_form').submit(function (event) {
+				event.preventDefault();
+
+				 //Form Daten sammeln mithilfe der ids
+				 let kursid = $('#kursid').val();
+				 let mitgliedid = $('#mitgliedid').val();
+				 let rhytmus = $('#rhytmus').val();
+				 var obj = {'rhytmus': rhytmus, 'kursid': kursid, 'mitgliedid': mitgliedid};
+
+				$.ajax({
+									 url: 'http://localhost:8000/wba2api/anmeldung',
+									 method: 'post',
+					contentType: 'application/json',
+					data: JSON.stringify(obj)
+							 }).done(function (response) {
+									 console.log(response);
+									 //Formular leeren
+									 //Anzeige aktualisieren
+									 $('#subscriber_form')[0].reset();
+									 location.reload(true);
+
+							 }).fail(function (jqXHR, statusText, error) {
+									 console.log('Response Code: ' + jqXHR.status + ' - Fehlermeldung: ' + jqXHR.responseText);
+									 alert("Eintrag konnte nicht angelegt werden: " + jqXHR.responseText);
+			});
+					 });
+
+		 </script>
+
+		 </div>
+
+		<div class = "col-right"></div>
+	</div>
+
+</article>
+
+<footer>
+	<nav>
+	<div class="row bottomnav">
+	 <div class = "col-left">
+		 <h1>Team Fit</h1>
+
+		 <ul>
+			 <li><a href="kontakt.html">Kontakt</a></li>
+			 <li><a href="impressum.html">Impressum</a></li>
+			 <li><a href="agb.html">AGB</a></li>
+			 <li><a href="https://de.wikipedia.org/wiki/Soziale_Medien"><img src="socialmedia.png" alt="Social Media Links" height="20px"/></a></li>
+		 </ul>
+
+	 </div>
+
+	 <div class = "col-center"></div>
+
+		<div class = "col-right"></div>
+	</div>
+	</nav>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,91 @@
+<html lang="de">
+<head>
+	<meta charset="utf-8"/>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+	<link rel="stylesheet" href="style.css">
+	<title>Team fit</title>
+	<script src="js/sessionHandling.js"></script>
+	<script>
+	loggedin();
+	function loggedin(){
+    if (!existsSessionItem('access')) {
+       alert('Sie sind nicht angemeldet! Melden Sie sich über login.html an.');
+        console.log('kein Session Item gefunden');
+				window.location.replace("login.html");
+		}
+    else {
+			if(getSessionItem('access')!=1) {
+					 alert('Sie sind nicht angemeldet! Melden Sie sich über login.html an.');
+					 console.log('access != 1');
+					 window.location.replace("login.html");
+				}
+		}
+  }
+	</script>
+
+</head>
+<body>
+
+<header>
+	<nav>
+		<div class="row topnav">
+		 <div class = "col-left">
+			 <img src="logo.png" alt="Team Fit" height="140px" class="logo">
+		 </div>
+
+		 <div class = "col-center">
+				<ul>
+					<li><a class="active" href="login.html">ADMINISTRATION</a></li>
+					 <li><a href="mitglieder.html">Mitglieder</a></li>
+					 <li><a href="kurse.html">Kurse</a></li>
+				</ul>
+		</div>
+
+			<div class = "col-right"></div>
+		</div>
+		</nav>
+</header>
+
+
+
+<article>
+
+	<div class="row content">
+		<div class = "col-left"></div>
+
+		 <div class = "col-center">
+			 <h1>Administration</h1>
+
+			 <h3>Willkommen im Administrationsbereich!</h3>
+
+		 </div>
+
+		<div class = "col-right"></div>
+	</div>
+
+</article>
+
+<footer>
+	<nav>
+	<div class="row bottomnav">
+	 <div class = "col-left">
+		 <h1>Team Fit</h1>
+
+		 <ul>
+			 <li><a href="kontakt.html">Kontakt</a></li>
+			 <li><a href="impressum.html">Impressum</a></li>
+			 <li><a href="agb.html">AGB</a></li>
+			 <li><a href="https://de.wikipedia.org/wiki/Soziale_Medien"><img src="socialmedia.png" alt="Social Media Links" height="20px"/></a></li>
+		 </ul>
+
+	 </div>
+
+	 <div class = "col-center"></div>
+
+		<div class = "col-right"></div>
+	</div>
+	</nav>
+</footer>
+
+</body>
+</html>

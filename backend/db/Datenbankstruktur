@@ -1,0 +1,48 @@
+Tabelle Trainer
+- ID Zahl
+- Bildpfad Text
+- Vorname Text
+- Nachname Text
+- Fachgebiet Text
+- Beschreibung Text
+
+Tabelle Mitgliedschaft
+- ID Zahl
+- Name Text
+- Preis double
+- PreisAlt double
+- Einmalig double
+
+Tabelle Mitglied
+- ID Zahl
+- Vorname Text
+- Nachname Text
+- Strasse Text
+- PLZ Text
+- Stadt Text
+- Geburtstag Text
+- Telefon Text
+- Email Text
+- Registrierungszeitpunkt Text
+- MitgliedschaftID Zahl (FK)
+
+Tabelle Kurs
+- ID Zahl
+- Name Text
+- Bildpfad Text
+- TrainerID Zahl (FK)
+- Beschreibung Text
+- Termin Text
+
+Tabelle Anmeldung
+- ID Zahl
+- Rhytmus Zahl
+- MitgliedID Zahl(FK)
+- KursID Zahl(FK)
+- Token Text
+- Zeitpunkt Text
+
+Tabelle Admin
+- ID Zahl
+- Benutzername Text
+- Passwort Text

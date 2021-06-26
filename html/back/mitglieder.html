@@ -1,0 +1,289 @@
+<html lang="de">
+<head>
+	<meta charset="utf-8"/>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+	<link rel="stylesheet" href="style.css">
+	<title>Team fit</title>
+	<script src="js/sessionHandling.js"></script>
+	<script>
+	loggedin();
+	function loggedin(){
+		if (!existsSessionItem('access')) {
+			 alert('Sie sind nicht angemeldet! Melden Sie sich über login.html an.');
+				console.log('kein Session Item gefunden');
+				window.location.replace("login.html");
+		}
+		else {
+			if(getSessionItem('access')!=1) {
+					 alert('Sie sind nicht angemeldet! Melden Sie sich über login.html an.');
+					 console.log('access != 1');
+					 window.location.replace("login.html");
+				}
+		}
+	}
+	</script>
+
+</head>
+<body>
+
+<header>
+	<nav>
+		<div class="row topnav">
+		 <div class = "col-left">
+			 <img src="logo.png" alt="Team Fit" height="140px" class="logo">
+		 </div>
+
+		 <div class = "col-center">
+				<ul>
+					<li><a href="login.html">ADMINISTRATION</a></li>
+					 <li><a href="mitglieder.html">Mitglieder</a></li>
+					 <li><a href="kurse.html">Kurse</a></li>
+				</ul>
+		</div>
+
+			<div class = "col-right"></div>
+		</div>
+		</nav>
+</header>
+
+
+
+<article>
+
+	<div class="row content">
+		<div class = "col-left"></div>
+
+		 <div class = "col-center">
+
+			 <section>
+				 <h1>Mitgliederverwaltung</h1>
+			 </section>
+
+
+			<!-- KEIN ZIEL für dynamsichen Inhalt. Dieser wird einfach immer weiter angehängt -->
+
+			<script>
+
+			$(document).ready(function() {
+					console.log('Document ready, loading data from Service');
+
+					$.ajax({
+							url: 'http://localhost:8000/wba2api/mitglied/alle',
+							method: 'get',
+			dataType: 'json'
+					}).done(function (response) {
+							console.log('Data loaded successfully');
+							console.log(response);
+
+							/* die Idee bei diesem Prinzip ist, dass HTML Elemente als Objekte angesehen werden
+									welche mit existierenden Methoden mit Daten und Attributen usw. versorgt werden können.
+							*/
+
+							// HTML Element anlegen
+							var div = $('<div>');
+
+							// object mit weiterem Inhalt und Code vervollständigen
+							div.append('Folgende Daten wurden geladen:<br><br>');
+
+									// unterobjekte erstellen
+									var table = $('<table>');
+									var tr = null;
+									var td = null;
+									table.append('<tr><th>ID</th><th>Nachname, Vorname</th><th>Adresse</th><th>Geburtsdatum</th><th>Telefon</th><th>E-Mail</th><th>Registrierung</th><th>Mitgliedschaft</th><th></th></tr>');
+
+									for (i = 0; i < response.daten.length; i++) {
+											// Objekt aus array holen
+											var obj = response.daten[i];
+
+											// zeile erstellen
+											tr = $('<tr>');
+
+													// zellen erstellen, mit Daten bestücken und der Zeile hinzufügen
+													td = $('<td>');
+													td.text(obj.id);
+													tr.append(td);
+
+													td = $('<td>');
+													td.text(obj.nachname + ', ' + obj.vorname);
+													tr.append(td);
+
+													td = $('<td>');
+													td.text(obj.strasse + ', ' + obj.plz + ' ' + obj.stadt);
+													tr.append(td);
+
+													td = $('<td>');
+													td.text(obj.geburtstag);
+													tr.append(td);
+
+													td = $('<td>');
+													td.text(obj.telefon);
+													tr.append(td);
+
+													td = $('<td>');
+													td.text(obj.email);
+													tr.append(td);
+
+													td = $('<td>');
+													td.text(obj.registrierungszeitpunkt);
+													tr.append(td);
+
+													td = $('<td>');
+													td.text(obj.mitgliedschaftid);
+													tr.append(td);
+
+													td = $('<td>');
+														btn = $('<button>');
+														btn.prop('class', 'delbtn')
+														btn.attr('onclick', 'deleteMember('+obj.id+')');
+														btn.prop('type', 'button');
+														btn.text('Löschen');
+														td.append(btn);
+													tr.append(td);
+
+											tr.attr('id','memberEntry'+obj.id);
+											// zeile der Tabelle hinzufügen
+											table.append(tr);
+									}
+
+							// tabelle dem div hinzufügen
+							div.append(table);
+
+							// zusammengesetzen Code / objekt ans dokument anhängen
+							$('section').append(div);
+
+					}).fail(function (jqXHR, statusText, error) {
+							console.log('Error occured');
+							console.log('Response Code: ' + jqXHR.status + ' - Message: ' + jqXHR.responseText);
+							alert(jqXHR.responseText);
+					});
+
+					$('.delbtn').click(function() {
+			            console.log('button delete clicked');
+			     });
+
+			});
+
+			function deleteMember(id){
+				console.log('Delete Member: ' + id);
+				$.ajax({
+		            url: 'http://localhost:8000/wba2api/mitglied/'+id,
+		            method: 'delete',
+					dataType: 'json'
+		        }).done(function (response) {
+		            console.log(response);
+					$('#memberEntry'+id).remove();
+		        }).fail(function (jqXHR, statusText, error) {
+		            console.log('Response Code: ' + jqXHR.status + ' - Fehlermeldung: ' + jqXHR.responseText);
+		            $('#output').html('Ein Fehler ist aufgetreten');
+								alert("Eintrag konnte nicht gelöscht werden: " + jqXHR.responseText);
+				});
+			}
+
+			</script>
+
+			<h1>Mitglied hinzufügen</h1>
+
+			<form id="add_form"></form>
+
+			<table class="add">
+				<tr>
+					<th>Nachname</th>
+					<th>Vorname</th>
+					<th>Strasse und Hausnummer</th>
+					<th>PLZ</th>
+					<th>Stadt</th>
+					<th>Geburtsdatum</th>
+					<th>Telefon</th>
+					<th>E-Mail</th>
+					<th>Mitgliedschaft (ID)</th>
+					<th></th>
+				</tr>
+				<tr>
+					<td><input type="text" id="nachname" name="nachname" style="border-style: none; " form = add_form required></td>
+					<td><input type="text" id="vorname" name="vorname" style="border-style: none;" form = add_form required></td>
+					<td><input type="text" id="strasse" name="strasse" style="border-style: none;" form = add_form required></td>
+					<td><input type="text" id="plz" name="plz" style="border-style: none; width: 60px;" form = add_form required></td>
+					<td><input type="text" id="stadt" name="stadt" style="border-style: none;" form = add_form required></td>
+					<td><input type="text" id="geburtstag" name="geburtstag" style="border-style: none;" form = add_form required></td>
+					<td><input type="tel" id="telefon" name="telefon" style="border-style: none;" form = add_form required></td>
+					<td><input type="email" id="email" name="email" style="border-style: none;" form = add_form required></td>
+					<td> <select id="mitgliedschaftid" name="mitgliedschaftid" style="border-style: none; -webkit-appearance: none; -moz-appearance: none; appearance: none;" form = add_form required>
+						 <option value="1">1</option>
+						 <option value="2">2</option>
+					 </select>
+					<td><input type="text" id="passwort" name="passwort" style="border-style: none;" form = add_form required></td>
+				 </td>
+					<td> <input type="submit" value=Hinzufügen form = add_form></td>
+				</tr>
+			</table>
+
+			<script>
+
+			$('#add_form').submit(function (event) {
+				event.preventDefault();
+
+				 //Form Daten sammeln mithilfe der ids
+				 let nachname = $('#nachname').val();
+				 let vorname = $('#vorname').val();
+				 let strasse = $('#strasse').val();
+				 let plz = $('#plz').val();
+				 let stadt = $('#stadt').val();
+				 let geburtstag = $('#geburtstag').val();
+				 let telefon = $('#telefon').val();
+				 let email = $('#email').val();
+				 let mitgliedschaftid= $('#mitgliedschaftid').val();
+				 let passwort= $('#passwort').val();
+				 var obj = { 'vorname': vorname, 'nachname': nachname, 'strasse': strasse, 'plz': plz, 'stadt': stadt, 'geburtstag': geburtstag, 'telefon': telefon, 'email': email, 'mitgliedschaftid': mitgliedschaftid, 'passwort':passwort};
+
+	 			$.ajax({
+	                 url: 'http://localhost:8000/wba2api/mitglied',
+	                 method: 'post',
+	 				contentType: 'application/json',
+	 				data: JSON.stringify(obj)
+	             }).done(function (response) {
+	                 console.log(response);
+									 //Formular leeren
+									 //Anzeige aktualisieren
+									 $('#add_form')[0].reset();
+									 location.reload(true);
+
+	             }).fail(function (jqXHR, statusText, error) {
+	                 console.log('Response Code: ' + jqXHR.status + ' - Fehlermeldung: ' + jqXHR.responseText);
+									 alert("Eintrag konnte nicht angelegt werden: " + jqXHR.responseText);
+			});
+	         });
+
+		 </script>
+
+		 </div>
+
+		<div class = "col-right"></div>
+	</div>
+
+</article>
+
+<footer>
+	<nav>
+	<div class="row bottomnav">
+	 <div class = "col-left">
+		 <h1>Team Fit</h1>
+
+		 <ul>
+			 <li><a href="kontakt.html">Kontakt</a></li>
+			 <li><a href="impressum.html">Impressum</a></li>
+			 <li><a href="agb.html">AGB</a></li>
+			 <li><a href="https://de.wikipedia.org/wiki/Soziale_Medien"><img src="socialmedia.png" alt="Social Media Links" height="20px"/></a></li>
+		 </ul>
+
+	 </div>
+
+	 <div class = "col-center"></div>
+
+		<div class = "col-right"></div>
+	</div>
+	</nav>
+</footer>
+
+</body>
+</html>

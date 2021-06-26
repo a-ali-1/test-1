@@ -1,0 +1,131 @@
+<html lang="de">
+<head>
+	<meta charset="utf-8"/>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+	<link rel="stylesheet" href="style.css">
+	<title>Team fit</title>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+	<script src="js/sessionHandling.js"></script>
+
+
+</head>
+<body>
+
+<header>
+	<nav>
+		<div class="row topnav">
+		 <div class = "col-left">
+			 <img src="logo.png" alt="Team Fit" height="140px" class="logo">
+		 </div>
+
+		 <div class = "col-center">
+				<ul>
+					<li><a class="active" href="login.html">ADMINISTRATION</a></li>
+					 <li><a href="mitglieder.html">Mitglieder</a></li>
+					 <li><a href="kurse.html">Kurse</a></li>
+				</ul>
+		</div>
+
+			<div class = "col-right"></div>
+		</div>
+		</nav>
+</header>
+
+
+
+</article>
+
+	<div class="row content">
+		<div class = "col-left"></div>
+
+		 <div class = "col-center">
+			 <h1>Administration:</h1>
+
+			 <div>
+				 <form id="login_form">
+
+					 <label for="benutzername">Benutzername:</label>
+					 <input type="text" id="benutzername" name="benutzername" placeholder="Benutzername" form="login_form" required>
+
+					 <label for="token">Passwort:</label>
+					 <input type="password" id="passwort" name="passwort" placeholder="****" form="login_form" required>
+
+					 <input id="login" type="submit" value="Anmelden" form="login_form">
+
+				 </form>
+
+					 <script>
+
+					 $('#login_form').submit(function (event) {
+						event.preventDefault();
+						console.log("button gedrückt");
+
+						 //Form Daten sammeln mithilfe der ids
+						 let benutzername = $('#benutzername').val();
+						 let passwort = $('#passwort').val();
+
+						$.ajax({
+                     		url: 'http://localhost:8000/wba2api/admin/gib/1',
+                      	method: 'get',
+                       dataType: 'json'
+                    	}).done(function (response) {
+												console.log(response);
+
+											  if (benutzername=response.daten.benutzername) {
+
+													 if ( passwort = response.daten.passwort) {
+														 console.log("Login");
+														 setSessionItem("access", 1);
+
+														 console.log("Jumping to page 2");
+														 location.href = 'administration.html';
+													 }
+													 else{
+														 alert('Passwort oder Nutzername nicht korrekt');
+													 }
+												 }
+												 else{
+														 alert('Passwort oder Nutzername nicht korrekt');
+													 }
+
+						}).fail(function (jqXHR, statusText, error) {
+							console.log('Response Code: ' + jqXHR.status + ' - Fehlermeldung: ' + jqXHR.responseText);
+							alert('Ein Fehler ist aufgetreten: ' + jqXHR.responseText);
+
+						});
+					});
+
+					</script>
+				 </div>
+
+		 </div>
+
+		<div class = "col-right"></div>
+	</div>
+
+</article>
+
+<footer>
+	<nav>
+	<div class="row bottomnav">
+	 <div class = "col-left">
+		 <h1>Team Fit</h1>
+
+		 <ul>
+			 <li><a href="kontakt.html">Kontakt</a></li>
+			 <li><a href="impressum.html">Impressum</a></li>
+			 <li><a href="agb.html">AGB</a></li>
+			 <li><a href="https://de.wikipedia.org/wiki/Soziale_Medien"><img src="socialmedia.png" alt="Social Media Links" height="20px"/></a></li>
+		 </ul>
+
+	 </div>
+
+	 <div class = "col-center"></div>
+
+		<div class = "col-right"></div>
+	</div>
+	</nav>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,190 @@
+<html lang="de">
+<head>
+	<meta charset="utf-8"/>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+	<link rel="stylesheet" href="style.css">
+	<title>Team fit</title>
+
+	<!--Bootstrap Stylesheet muss an erster Stelle stehen-->
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6" crossorigin="anonymous">
+
+	<link rel="stylesheet" href="style.css">
+
+	<!-- JavaScript Bundle with Popper -->
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-p34f1UUtsS3wqzfto5wAAmdvj+osOnFyQFpp4Ua3gs/ZVWx6oOypYoCJhGGScy+8" crossorigin="anonymous"></script>
+
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+	<script src="js/urlParameter.js"></script>
+
+</head>
+<body>
+
+<header>
+	<nav>
+		<div class="row topnav">
+		 <div class = "col-left">
+			 <img src="logo.png" alt="Team Fit" height="140px" class="logo">
+		 </div>
+
+		 <div class = "col-center">
+				<ul>
+					 <li><a href="home.html">Home</a></li>
+					 <li><a class="active" href="mitgliedschaft.html">Mitgliedschaft</a></li>
+					 <li><a href="kurse.html">Kurse</a></li>
+					 <li><a href="kontakt.html">Kontakt</a></li>
+				</ul>
+		</div>
+
+			<div class = "col-right"></div>
+		</div>
+		</nav>
+</header>
+
+
+
+<article>
+
+	<div class="row content" style="width: 95%;">
+		<div class = "col-left"></div>
+
+		 <div class = "col-center">
+			 <h1>Online-Anmeldung</h1>
+
+			 <h3>Jetzt Mitglied werden und Training beginnen!</h3>
+
+			 <h2>Persönliche Daten:</h2>
+
+ 			<div>
+ 				<form id="add_form">
+
+
+
+ 					<label for="ichbin">Ich bin ...</label></br>
+ 					<input type="text" id="vorname" name="vorname" placeholder="Vorname *" style="display:inline-block;width: 150px;" form = add_form required>
+					<input type="text" id="nachname" name="nachname" placeholder="Nachname *" style="display:inline-block;width: 150px;" form = add_form required>
+					<input type="text" id="strasse" name="strasse" placeholder="Straße und Hausnummer *" style="width: 305px;" form = add_form required>
+					<input type="number" id="plz" name="plz" placeholder="PLZ *"  style="display:inline-block; width: 65px;" form = add_form required>
+					<input type="text" id="stadt" name="stadt" placeholder="Stadt *" style="display:inline-block; width: 235px;" form = add_form required></br>
+					<label for="geburtstag">Geburtsdatum:</label>
+					<input type="text" id="geburtstag" name="geburtstag" style="display:inline; margin-inline-start: 50px;" form = add_form required>
+					<input type="tel" id="telefon" name="telefon" placeholder="Telefon" form = add_form required>
+					<input type="email" id="email" name="email" placeholder="your@mail.com *" form = add_form required>
+    				<input type="password" id="passwort" name="passwort" placeholder="Passwort *" form = add_form required>
+					<label for="mitgliedschaftid"><h2>Mitgliedschaft:</h2></label>
+ 					<select id="mitgliedschaftid" name="mitgliedschaftid"  form = add_form required>
+ 						<option id="mitgliedschaft"></option>
+ 					</select>
+					<label id="mitgliedschaftPreis" style="display:inline-block"></label>
+
+ 					<input type="submit" value=Hinzufügen>
+ 				</form>
+ 				</div>
+
+		 </div>
+
+		<div class = "col-right"></div>
+	</div>
+
+</article>
+
+<footer>
+	<nav>
+	<div class="row bottomnav">
+	 <div class = "col-left">
+		 <h1>Team Fit</h1>
+
+		 <ul>
+			 <li><a href="kontakt.html">Kontakt</a></li>
+			 <li><a href="impressum.html">Impressum</a></li>
+			 <li><a href="agb.html">AGB</a></li>
+			 <li><a href="https://de.wikipedia.org/wiki/Soziale_Medien"><img src="socialmedia.png" alt="Social Media Links" height="20px"/></a></li>
+		 </ul>
+
+	 </div>
+
+	 <div class = "col-center"></div>
+
+		<div class = "col-right"></div>
+	</div>
+	</nav>
+</footer>
+
+
+<script>
+
+//Kursid aus url ermittlen und Daten laden
+$(document).ready(function() {
+	 console.log('loading data for choosen class');
+
+	 // get id from url parameter
+	 var id = -1;
+
+	 if (existsUrlParameter('id'))
+			 id = getUrlParameterValue('id');
+
+	 console.log('target membership id=' + id);
+
+	 if (id == -1) {
+			 alert('Keine Ziel-ID in URL erhalten. Fehlerhafter Link. Wählen Sie zuerst eine Mitgliedschaft über mitgliedschaft.html');
+			 return;
+	 }
+
+	 //load class data
+	 $.ajax({
+						 url: 'http://localhost:8000/wba2api/mitgliedschaft/gib/' + id,
+						 method: 'get',
+						 dataType: 'json'
+				 }).done(function (response) {
+						 console.log(response);
+
+						 $('#mitgliedschaftPreis').text(response.daten.preis + "€ / Monat, einmalig " + response.daten.einmalig + "€ Grundgebühr");
+						 $('#mitgliedschaft').val(response.daten.id);
+						 $('#mitgliedschaft').text(response.daten.name);
+
+				 }).fail(function (jqXHR, statusText, error) {
+						 console.log('Response Code: ' + jqXHR.status + ' - Fehlermeldung: ' + jqXHR.responseText);
+						 alert('Ein Fehler ist aufgetreten: ' + jqXHR.responseText);
+				 });
+
+   });
+	 //TODO: Mitgliedsid ermitteln und Verifikation durchführen
+
+
+	$('#add_form').submit(function (event) {
+		event.preventDefault();
+
+		 //Form Daten sammeln mithilfe der ids
+		 let nachname = $('#nachname').val();
+		 let vorname = $('#vorname').val();
+		 let strasse = $('#strasse').val();
+		 let plz = $('#plz').val();
+		 let stadt = $('#stadt').val();
+		 let geburtstag = $('#geburtstag').val();
+		 let telefon = $('#telefon').val();
+		 let email = $('#email').val();
+		 let mitgliedschaftid= $('#mitgliedschaftid').val();
+		 let passwort = $('#passwort').val();
+		 var obj = { 'vorname': vorname, 'nachname': nachname, 'strasse': strasse, 'plz': plz, 'stadt': stadt, 'geburtstag': geburtstag, 'telefon': telefon, 'email': email, 'mitgliedschaftid': mitgliedschaftid, 'passwort': passwort};
+
+		 $.ajax({
+			 url: 'http://localhost:8000/wba2api/mitglied',
+			 method: 'post',
+			 contentType: 'application/json',
+			 data: JSON.stringify(obj)
+		 }).done(function (response) {
+			 console.log(response);
+			 //Formular leeren
+			 alert("Mitgliedsantrag erfolgreich abgesendet.");
+
+			 $('#add_form')[0].reset();
+
+		 }).fail(function (jqXHR, statusText, error) {
+			 console.log('Response Code: ' + jqXHR.status + ' - Fehlermeldung: ' + jqXHR.responseText);
+			 alert("Eintrag konnte nicht angelegt werden: " + jqXHR.responseText);
+	});
+	 });
+
+ </script>
+
+</body>
+</html>
